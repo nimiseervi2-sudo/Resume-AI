@@ -1,0 +1,17 @@
+# Secrets: never commit these
+.env
+.env.*
+!.env.example
+
+# Installed packages and logs
+node_modules/
+*.log
+
+# Resumes used for local testing
+uploads/
+*.pdf
+*.docx
+
+# Editor and system files
+.DS_Store
+.vscode/

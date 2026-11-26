@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ResumeAI | Make Your Resume Stand Out</title>
+  <meta name="description" content="Compare your resume with a job description and see how to improve it.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%234f46e5'/><text x='16' y='22' font-size='18' text-anchor='middle' fill='white' font-family='sans-serif'>R</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="container nav" aria-label="Main">
+      <a href="#top" class="logo">
+        <span class="logo-mark" aria-hidden="true">R</span>
+        ResumeAI
+      </a>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+      </ul>
+      <a href="#how-it-works" class="button button-small">Get Started</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <p class="eyebrow">AI Resume Analyzer</p>
+          <h1>Make Your Resume Stand Out with AI</h1>
+          <p class="hero-text">
+            Compare your resume with a job description, find the skills you are
+            missing, and get clear suggestions to improve it.
+          </p>
+          <div class="hero-actions">
+            <a href="#how-it-works" class="button">Get Started</a>
+            <a href="#features" class="button button-outline">See Features</a>
+          </div>
+          <p class="hero-note">ResumeAI is in development. Resume upload is coming next.</p>
+        </div>
+
+        <!-- Static illustration only. These numbers are not a real analysis. -->
+        <figure class="preview-card">
+          <figcaption>Sample preview</figcaption>
+          <div class="score-row">
+            <div class="score-ring" role="img" aria-label="Sample score: 78 out of 100">
+              <span>78</span>
+            </div>
+            <div>
+              <h2>Estimated ATS score</h2>
+              <p>Out of 100</p>
+            </div>
+          </div>
+          <h3>Matching skills</h3>
+          <ul class="tags tags-success">
+            <li>JavaScript</li>
+            <li>HTML</li>
+            <li>CSS</li>
+          </ul>
+          <h3>Missing skills</h3>
+          <ul class="tags tags-warning">
+            <li>React</li>
+            <li>Node.js</li>
+          </ul>
+        </figure>
+      </div>
+    </section>
+
+    <section id="features" class="section">
+      <div class="container">
+        <h2 class="section-title">What ResumeAI will do</h2>
+        <p class="section-text">Simple tools to help you tailor your resume to each job.</p>
+        <div class="card-grid">
+          <article class="card">
+            <span class="card-icon" aria-hidden="true">📊</span>
+            <h3>ATS score estimate</h3>
+            <p>See an estimated score out of 100 for how well your resume fits the job.</p>
+          </article>
+          <article class="card">
+            <span class="card-icon" aria-hidden="true">🎯</span>
+            <h3>Skill matching</h3>
+            <p>Find which required skills your resume shows and which ones are missing.</p>
+          </article>
+          <article class="card">
+            <span class="card-icon" aria-hidden="true">💡</span>
+            <h3>Clear suggestions</h3>
+            <p>Learn your strengths, weak spots, and keywords worth adding.</p>
+          </article>
+          <article class="card">
+            <span class="card-icon" aria-hidden="true">📄</span>
+            <h3>Downloadable report</h3>
+            <p>Save your results and use them while you edit your resume.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="how-it-works" class="section section-tinted">
+      <div class="container">
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-text">Three steps from resume to feedback.</p>
+        <ol class="steps">
+          <li class="card">
+            <span class="step-number" aria-hidden="true">1</span>
+            <h3>Upload your resume</h3>
+            <p>Choose a PDF or DOCX file.</p>
+          </li>
+          <li class="card">
+            <span class="step-number" aria-hidden="true">2</span>
+            <h3>Paste the job description</h3>
+            <p>Add the text of the job you want to apply for.</p>
+          </li>
+          <li class="card">
+            <span class="step-number" aria-hidden="true">3</span>
+            <h3>Review your results</h3>
+            <p>Check your score, skill gaps, and suggested improvements.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; <span id="current-year">2026</span> ResumeAI</p>
+      <p>Scores are estimates and do not come from any real applicant tracking system.</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

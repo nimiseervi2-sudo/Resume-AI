@@ -8,6 +8,7 @@
   --background: #f8f9fc;
   --surface: #ffffff;
   --border: #e4e7f0;
+  --danger: #b91c1c;
   --success: #166534;
   --success-soft: #dcfce7;
   --warning: #92400e;
@@ -39,7 +40,10 @@ a {
   text-decoration: none;
 }
 
-a:focus-visible {
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
   outline: 3px solid var(--primary);
   outline-offset: 3px;
 }
@@ -49,6 +53,11 @@ h2,
 h3 {
   line-height: 1.2;
   text-wrap: balance; /* avoids a single word alone on the last line */
+}
+
+/* Lets the "hidden" attribute win over display rules below */
+[hidden] {
+  display: none !important;
 }
 
 .container {
@@ -90,6 +99,25 @@ section {
 .button-small {
   padding: 8px 16px;
   font-size: 0.9rem;
+}
+
+button.button {
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+button.button-small {
+  font-size: 0.9rem;
+}
+
+.button-outline.button-danger {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.button-outline.button-danger:hover {
+  background: #fee2e2;
 }
 
 /* ===== Header ===== */
@@ -138,6 +166,25 @@ section {
 
 .nav-links a:hover {
   color: var(--primary);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Only shown on phones */
+.menu-toggle {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.2rem;
+  cursor: pointer;
 }
 
 /* ===== Hero ===== */
@@ -346,6 +393,182 @@ section {
   font-weight: 700;
 }
 
+/* ===== Analyze form ===== */
+.analyze-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* Allows grid items to shrink around long file names */
+.analyze-form > * {
+  min-width: 0;
+}
+
+.analyze-form .card {
+  display: flex;
+  flex-direction: column;
+}
+
+.analyze-form .card h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.drop-zone {
+  display: flex;
+  flex: 1;
+  min-height: 260px;
+  border: 2px dashed #b9c0da;
+  border-radius: var(--radius);
+  background: var(--background);
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.drop-zone:hover,
+.drop-zone.dragging {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.drop-zone:focus-within {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+}
+
+.drop-zone.invalid {
+  border-color: var(--danger);
+}
+
+.drop-prompt,
+.file-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 24px;
+  text-align: center;
+}
+
+.drop-prompt {
+  cursor: pointer;
+}
+
+.drop-icon {
+  font-size: 2rem;
+}
+
+.link-text {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.file-name {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+}
+
+.card .file-name {
+  color: var(--text);
+}
+
+.file-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* Hidden on screen but still usable with a keyboard and screen reader */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.analyze-form label[for^="job"] {
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.optional {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #b9c0da;
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+input[type="text"] {
+  margin-bottom: 16px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+textarea[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.hint {
+  margin-top: 8px;
+  font-size: 0.85rem;
+}
+
+.hint.over-limit {
+  font-weight: 600;
+}
+
+.card .hint.over-limit,
+.card .error,
+.error {
+  color: var(--danger);
+}
+
+.error {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.error:empty,
+.form-status:empty {
+  display: none;
+}
+
+.form-footer {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+.form-status {
+  max-width: 34rem;
+  margin: 16px auto 0;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: var(--warning-soft);
+  color: var(--warning);
+  font-weight: 500;
+}
+
 /* ===== Footer ===== */
 .site-footer {
   padding: 32px 0;
@@ -366,7 +589,8 @@ section {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .steps {
+  .steps,
+  .analyze-form {
     grid-template-columns: 1fr;
   }
 }
@@ -385,20 +609,36 @@ section {
     grid-template-columns: 1fr;
   }
 
-  /* Section links move to their own row under the logo */
-  .nav {
-    flex-wrap: wrap;
-    padding-block: 12px;
+  /* Section links become a drop-down menu */
+  .menu-toggle {
+    display: block;
   }
 
   .nav-links {
-    order: 3;
-    width: 100%;
-    justify-content: center;
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 0;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: var(--shadow);
   }
 
-  section {
-    scroll-margin-top: 120px;
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-links a {
+    display: block;
+    padding: 12px 0;
+  }
+
+  .analyze-form .card {
+    padding: 16px;
   }
 }
 

@@ -2,8 +2,8 @@
 
 An AI Resume Analyzer that compares your resume with a job description.
 
-**Status:** Phase 1 of 8 (project setup and basic landing page). Resume upload
-and analysis are not built yet.
+**Status:** Phase 2 of 8 (frontend). You can choose a resume and paste a job
+description. Reading the file and analyzing it are not built yet.
 
 ## Run it locally
 
@@ -21,13 +21,13 @@ browser.
 ```
 index.html      Page content
 css/style.css   Styling
-js/app.js       Page behaviour
+js/app.js       Menu, file selection and form validation
 ```
 
 ## Roadmap
 
 - [x] Phase 1: Project setup
-- [ ] Phase 2: Frontend (upload area and job description)
+- [x] Phase 2: Frontend (upload area and job description)
 - [ ] Phase 3: PDF and DOCX parsing
 - [ ] Phase 4: Basic keyword analysis
 - [ ] Phase 5: AI integration

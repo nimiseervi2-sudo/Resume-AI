@@ -18,11 +18,17 @@
         <span class="logo-mark" aria-hidden="true">R</span>
         ResumeAI
       </a>
-      <ul class="nav-links">
+      <ul class="nav-links" id="nav-links">
         <li><a href="#features">Features</a></li>
         <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#analyze">Analyze</a></li>
       </ul>
-      <a href="#how-it-works" class="button button-small">Get Started</a>
+      <div class="nav-actions">
+        <a href="#analyze" class="button button-small">Get Started</a>
+        <button type="button" class="menu-toggle" id="menu-toggle" aria-controls="nav-links" aria-expanded="false" aria-label="Menu">
+          <span aria-hidden="true">☰</span>
+        </button>
+      </div>
     </nav>
   </header>
 
@@ -37,10 +43,10 @@
             missing, and get clear suggestions to improve it.
           </p>
           <div class="hero-actions">
-            <a href="#how-it-works" class="button">Get Started</a>
+            <a href="#analyze" class="button">Get Started</a>
             <a href="#features" class="button button-outline">See Features</a>
           </div>
-          <p class="hero-note">ResumeAI is in development. Resume upload is coming next.</p>
+          <p class="hero-note">ResumeAI is in development. You can add your details now; analysis is coming soon.</p>
         </div>
 
         <!-- Static illustration only. These numbers are not a real analysis. -->
@@ -120,6 +126,61 @@
             <p>Check your score, skill gaps, and suggested improvements.</p>
           </li>
         </ol>
+      </div>
+    </section>
+
+    <section id="analyze" class="section">
+      <div class="container">
+        <h2 class="section-title">Analyze Your Resume</h2>
+        <p class="section-text">Add your resume and the job you are applying for.</p>
+
+        <form id="analyze-form" class="analyze-form" novalidate>
+          <div class="card">
+            <h3 id="resume-heading">1. Your resume</h3>
+
+            <div class="drop-zone" id="drop-zone">
+              <input type="file" id="resume-file" class="visually-hidden" accept=".pdf,.docx" aria-label="Resume file" aria-describedby="file-error">
+
+              <!-- Shown when no file is chosen -->
+              <label for="resume-file" class="drop-prompt" id="drop-prompt">
+                <span class="drop-icon" aria-hidden="true">⬆️</span>
+                <strong>Drag and drop your resume here</strong>
+                <span>or <span class="link-text">browse files</span></span>
+                <small>PDF or DOCX, up to 5 MB</small>
+              </label>
+
+              <!-- Shown after a file is chosen -->
+              <div class="file-info" id="file-info" hidden>
+                <span class="drop-icon" aria-hidden="true">📄</span>
+                <p class="file-name" id="file-name"></p>
+                <p class="file-size" id="file-size"></p>
+                <div class="file-actions">
+                  <button type="button" class="button button-outline button-small" id="replace-file">Replace</button>
+                  <button type="button" class="button button-outline button-small button-danger" id="remove-file">Remove</button>
+                </div>
+              </div>
+            </div>
+            <p class="error" id="file-error" role="alert"></p>
+            <p class="hint">Your file is not uploaded anywhere.</p>
+          </div>
+
+          <div class="card">
+            <h3>2. The job</h3>
+
+            <label for="job-title">Job title <span class="optional">(optional)</span></label>
+            <input type="text" id="job-title" maxlength="100" placeholder="e.g. Frontend Developer">
+
+            <label for="job-description">Job description</label>
+            <textarea id="job-description" rows="10" required placeholder="Paste the full job description here" aria-describedby="description-error description-count"></textarea>
+            <p class="hint" id="description-count">0 / 10,000 characters</p>
+            <p class="error" id="description-error" role="alert"></p>
+          </div>
+
+          <div class="form-footer">
+            <button type="submit" class="button">Analyze Resume</button>
+            <p class="form-status" id="form-status" role="status"></p>
+          </div>
+        </form>
       </div>
     </section>
   </main>

@@ -114,3 +114,17 @@ test("checks whether a skill is really in the text", () => {
     assert.ok(!mentionsSkill(text, skill), skill);
   }
 });
+
+test("does not treat C-level, R&D or 'go further' as programming skills", () => {
+  for (const [text, skill] of [["Worked with C-level executives", "C"], ["Handled R&D budgets", "R"], ["We go further", "Go"]]) {
+    assert.ok(!mentionsSkill(text, skill), skill);
+  }
+  for (const skill of ["C", "R", "Go"]) assert.ok(mentionsSkill("Skills: C, R, Go", skill), skill);
+  assert.ok(mentionsSkill("Built services in Golang", "Go"));
+});
+
+test("finds lowercase react and node in skill lists only", () => {
+  assert.deepStrictEqual(analyzeResume("Skills: html, react, node", "HTML, React and Node.js").missingSkills, []);
+  const missing = analyzeResume("We react quickly. Each cluster node is monitored. Note: react to alerts.", "React and Node.js").missingSkills;
+  assert.deepStrictEqual(missing, ["React", "Node.js"]);
+});

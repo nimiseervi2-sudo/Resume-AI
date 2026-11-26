@@ -98,8 +98,12 @@ const LIST_BEFORE = "(?<=[,/(|•:] ?)"; // follows a list separator
 const LIST_AFTER = "(?= ?[,/)|•])"; // comes before a list separator
 const inList = (word) => `${LIST_BEFORE}${word}(?![\\w+#&'-])|(?<![\\w+#&.-])${word}${LIST_AFTER}`;
 
+// "react" or "node" in lowercase counts only when it follows a list separator
+const lowercaseInList = (word) => new RegExp(`${LIST_BEFORE}${word}(?![\\w-])(?! (?:to|quickly|well)\\b)`, "i");
+
 const SPECIAL_PATTERNS = {
-  "React": /(?<![\w-])React(?![\w-])(?! (?:to|quickly|well)\b)/,
+  "React": [/(?<![\w-])React(?![\w-])(?! (?:to|quickly|well)\b)/, lowercaseInList("react")],
+  "Node.js": lowercaseInList("node"),
   "Express": new RegExp(inList("Express")),
   "C": new RegExp(inList("C")),
   "R": new RegExp(inList("R")),
@@ -150,7 +154,8 @@ function patternsFor([name, aliases]) {
     // The skill must not be part of a longer word ("Java" in "JavaScript")
     return new RegExp(`(?<![\\p{L}\\p{N}_])${body}(?![\\p{L}\\p{N}_+#])`, "iu");
   });
-  if (SPECIAL_PATTERNS[name]) patterns.push(SPECIAL_PATTERNS[name]);
+  // A special entry can be one pattern or a list of them
+  if (SPECIAL_PATTERNS[name]) patterns.push(...[SPECIAL_PATTERNS[name]].flat());
   return patterns;
 }
 
@@ -237,18 +242,22 @@ function joinList(items) {
   return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
 }
 
+const SHORT_NAMES = ["C", "R", "Go"];
+
 // True if the text really mentions this skill, under any spelling we know.
 // Used to check the skills reported by the AI.
 function mentionsSkill(text, skillName) {
   const simplify = (value) => ` ${value.toLowerCase().replace(/[^\p{L}\p{N}+#]+/gu, " ").trim()} `;
   const name = skillName.replace(/\(.*?\)/g, "").trim(); // "JavaScript (ES6)"
   if (!simplify(name).trim()) return false;
-  if (simplify(text).includes(simplify(name))) return true;
-
   const wanted = name.toLowerCase();
   const known = [...TECHNICAL_SKILLS, ...SOFT_SKILLS].find(
     ([title, aliases]) => title.toLowerCase() === wanted || aliases.some((alias) => alias.toLowerCase() === wanted),
   );
+  // "C", "R" and "Go" also appear in "C-level" or "R&D", so use the strict check only
+  if (known && SHORT_NAMES.includes(known[0])) return containsSkill(toSingleLine(text), known);
+
+  if (simplify(text).includes(simplify(name))) return true;
   if (known) return containsSkill(toSingleLine(text), known);
 
   // "HTML/CSS" is present only if every part is

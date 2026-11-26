@@ -1,0 +1,23 @@
+# Settings for deploying on Render (https://render.com) as a Blueprint
+services:
+  - type: web
+    name: resume-ai
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/status
+    envVars:
+      - key: NODE_VERSION
+        value: "24.14.1"
+      - key: HOST
+        value: 0.0.0.0
+      - key: TRUST_PROXY
+        value: "1"
+      - key: LLM_BASE_URL
+        value: https://api.groq.com/openai/v1
+      - key: LLM_MODEL
+        value: openai/gpt-oss-120b
+      # Secret: Render asks you to type it in. It is never stored in this file.
+      - key: LLM_API_KEY
+        sync: false

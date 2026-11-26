@@ -1,6 +1,6 @@
 {
   "name": "resume-ai",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "AI Resume Analyzer: compare a resume with a job description.",
   "private": true,
   "engines": {

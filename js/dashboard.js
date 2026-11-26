@@ -2,6 +2,9 @@
 
 const resultsSection = document.getElementById("results");
 
+// Everything needed to write a report about the results on screen
+let currentReport = null;
+
 // A word and a color for each score range, highest first
 const SCORE_LEVELS = [
   { from: 75, label: "Strong match", style: "level-high" },
@@ -32,6 +35,7 @@ function showScore(score) {
   // The CSS uses --score to decide how much of the ring to fill
   document.getElementById("result-ring").style.setProperty("--score", score);
   resultsSection.querySelector(".overview").className = `card overview ${level.style}`;
+  return level.label;
 }
 
 // A bar showing how many of the listed skills the resume covers
@@ -49,14 +53,18 @@ function showCoverage(matched, missing) {
 
 // "source" is a sentence saying how the result was made.
 // "notice" explains a fallback, and is empty otherwise.
-function showResults(result, { source, notice = "", jobTitle = "" }) {
+function showResults(result, { source, notice = "", jobTitle = "", fileName = "" }) {
   document.getElementById("result-source").textContent = source;
-  document.getElementById("result-notice").textContent = notice;
+  document.getElementById("result-notice-text").textContent = notice;
   document.getElementById("result-notice").hidden = !notice;
   document.getElementById("result-job").textContent = jobTitle ? ` for ${jobTitle}` : "";
   document.getElementById("result-summary").textContent = result.summary;
 
-  showScore(result.atsScore);
+  const verdict = showScore(result.atsScore);
+  currentReport = { result, verdict, source, notice, jobTitle, fileName, date: new Date() };
+  // Shown only on paper
+  document.getElementById("print-details").textContent =
+    `${fileName ? `Resume file: ${fileName} · ` : ""}Date: ${formatDate(currentReport.date)}`;
   showCoverage(result.matchedSkills.length, result.missingSkills.length);
 
   // Only the basic analysis produces these two keyword lists
@@ -80,4 +88,14 @@ function showResults(result, { source, notice = "", jobTitle = "" }) {
 
 function hideResults() {
   resultsSection.hidden = true;
+  currentReport = null;
 }
+
+document.getElementById("download-report").addEventListener("click", () => {
+  if (!currentReport) return;
+  downloadTextFile(reportFileName(currentReport.date), buildReport(currentReport));
+});
+
+document.getElementById("print-report").addEventListener("click", () => {
+  window.print();
+});

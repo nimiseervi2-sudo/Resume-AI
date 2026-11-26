@@ -252,6 +252,8 @@ titleInput.addEventListener("input", () => {
 const useAiInput = document.getElementById("use-ai");
 const aiNote = document.getElementById("ai-note");
 const analyzeButton = document.getElementById("analyze-button");
+const analysisProgress = document.getElementById("analysis-progress");
+const elapsedTime = document.getElementById("elapsed-time");
 
 // Lets us cancel an AI request when the user changes something
 let aiRequest = null;
@@ -266,9 +268,23 @@ function clearAnalysis() {
   hideResults();
 }
 
+// Updates the elapsed time while the AI works
+let elapsedTimer = null;
+
 function setAnalyzing(isAnalyzing) {
   analyzeButton.disabled = isAnalyzing;
   analyzeButton.textContent = isAnalyzing ? "Analyzing…" : "Analyze Resume";
+  analysisProgress.hidden = !isAnalyzing;
+
+  clearInterval(elapsedTimer);
+  if (isAnalyzing) {
+    const start = Date.now();
+    const showElapsed = () => {
+      elapsedTime.textContent = `${Math.floor((Date.now() - start) / 1000)} seconds`;
+    };
+    showElapsed();
+    elapsedTimer = setInterval(showElapsed, 1000);
+  }
 }
 
 // Asks the server whether AI is set up, and tells the user where text will go
@@ -313,13 +329,14 @@ async function requestAiAnalysis(details, signal) {
   return data;
 }
 
-function runBasicAnalysis(details, notice = "") {
+function runBasicAnalysis(details, fileName, notice = "") {
   try {
     const result = analyzeResume(details.resumeText, details.jobDescription, details.jobTitle);
     showResults(result, {
       source: "Basic keyword analysis, without AI. The score is an estimate.",
       notice,
       jobTitle: details.jobTitle,
+      fileName,
     });
   } catch (error) {
     formStatus.textContent = notice ? `${notice.replace(" Showing the basic analysis instead.", "")} ${error.message}` : error.message;
@@ -332,9 +349,10 @@ async function runAnalysis() {
     jobDescription: descriptionInput.value.trim(),
     jobTitle: titleInput.value.trim(),
   };
+  const fileName = resume.file.name; // used in the report, never sent to the server
 
   if (!useAiInput.checked) {
-    runBasicAnalysis(details);
+    runBasicAnalysis(details, fileName);
     return;
   }
 
@@ -350,16 +368,30 @@ async function runAnalysis() {
     showResults(result, {
       source: `AI analysis by ${result.model}. The score is an estimate, and AI can make mistakes.`,
       jobTitle: details.jobTitle,
+      fileName,
     });
   } catch (error) {
     if (request !== aiRequest) return;
     formStatus.textContent = "";
-    runBasicAnalysis(details, `AI analysis was not available: ${error.message} Showing the basic analysis instead.`);
+    runBasicAnalysis(details, fileName, `AI analysis was not available: ${error.message} Showing the basic analysis instead.`);
   }
 
   aiRequest = null;
   setAnalyzing(false);
 }
+
+document.getElementById("cancel-analysis").addEventListener("click", () => {
+  clearAnalysis();
+  formStatus.textContent = "Analysis cancelled.";
+  analyzeButton.focus();
+});
+
+// Offered when the basic analysis was shown because the AI failed
+document.getElementById("retry-ai").addEventListener("click", () => {
+  useAiInput.checked = true;
+  form.requestSubmit();
+  analyzeButton.focus();
+});
 
 useAiInput.addEventListener("change", () => {
   formStatus.textContent = "";

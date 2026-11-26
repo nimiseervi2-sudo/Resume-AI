@@ -2,13 +2,14 @@
 
 An AI Resume Analyzer that compares your resume with a job description.
 
-**Status:** Phase 6 of 8 (results dashboard). Add a PDF or DOCX resume and a job
+**Status:** Phase 7 of 8 (final features). Add a PDF or DOCX resume and a job
 description to get an AI analysis. If AI is not set up or unavailable, a basic
 keyword analysis runs in your browser instead.
 
 The dashboard shows an estimated score (strong match from 75, moderate from 50,
 low below that), skill coverage, matching and missing skills, strengths,
-weaknesses, suggestions and keywords to consider.
+weaknesses, suggestions and keywords to consider. You can download the results
+as a text report, or print them and choose "Save as PDF".
 
 ## How the basic score works
 
@@ -108,6 +109,7 @@ js/app.js       Menu, file selection and form validation
 js/resumeParser.js  Reads text from PDF and DOCX files
 js/analyzer.js      Basic keyword analysis and scoring
 js/dashboard.js     Shows the results
+js/report.js        Builds the downloadable report
 backend/server.js   Web server
 backend/routes/     AI analysis API
 tests/              Automated tests for the analyzer and server
@@ -121,7 +123,7 @@ tests/              Automated tests for the analyzer and server
 - [x] Phase 4: Basic keyword analysis
 - [x] Phase 5: AI integration
 - [x] Phase 6: Results dashboard
-- [ ] Phase 7: Report download and polish
+- [x] Phase 7: Report download and polish
 - [ ] Phase 8: Documentation and deployment
 
 ## Note

@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <noscript><p class="noscript">ResumeAI needs JavaScript to read and analyze your resume. Please turn it on and reload the page.</p></noscript>
+
   <header class="site-header">
     <nav class="container nav" aria-label="Main">
       <a href="#top" class="logo">
@@ -185,6 +187,11 @@
             <label class="ai-option"><input type="checkbox" id="use-ai" disabled> Use AI analysis</label>
             <p class="ai-note" id="ai-note">Checking whether AI analysis is available…</p>
             <button type="submit" class="button" id="analyze-button">Analyze Resume</button>
+            <div class="progress-row" id="analysis-progress" hidden>
+              <span class="spinner" aria-hidden="true"></span>
+              <span class="elapsed" id="elapsed-time" aria-hidden="true"></span>
+              <button type="button" class="button button-outline button-small" id="cancel-analysis">Cancel</button>
+            </div>
             <p class="form-status" id="form-status" role="status"></p>
           </div>
         </form>
@@ -195,7 +202,11 @@
       <div class="container">
         <h2 class="section-title" id="results-title" tabindex="-1">Your Results</h2>
         <p class="section-text" id="result-source"></p>
-        <p class="notice" id="result-notice" role="status" hidden></p>
+        <div class="notice" id="result-notice" role="status" hidden>
+          <p id="result-notice-text"></p>
+          <button type="button" class="button button-outline button-small" id="retry-ai">Try AI again</button>
+        </div>
+        <p class="print-only" id="print-details"></p>
 
         <div class="card overview">
           <div class="score-ring score-ring-large" id="result-ring">
@@ -248,7 +259,11 @@
           </div>
         </div>
 
-        <p class="results-actions"><a href="#analyze" class="button button-outline">Edit details and analyze again</a></p>
+        <div class="results-actions">
+          <button type="button" class="button" id="download-report">Download report</button>
+          <button type="button" class="button button-outline" id="print-report">Print or save as PDF</button>
+          <a href="#analyze" class="button button-outline">Edit details and analyze again</a>
+        </div>
       </div>
     </section>
   </main>
@@ -264,6 +279,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/mammoth@1.13.0/mammoth.browser.min.js" integrity="sha384-8NWE3bZDrmRI4IePMoQaEoLhAQ1MmRMJkdNgnGiHRFanTqsFKr0TmK6aSZvFJ/PO" crossorigin="anonymous"></script>
   <script defer src="js/resumeParser.js"></script>
   <script defer src="js/analyzer.js"></script>
+  <script defer src="js/report.js"></script>
   <script defer src="js/dashboard.js"></script>
   <script defer src="js/app.js"></script>
 </body>

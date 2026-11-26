@@ -631,6 +631,63 @@ button.button:disabled {
   text-align: center;
 }
 
+.progress-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+  font-weight: 600;
+}
+
+/* A turning circle that shows work is in progress */
+.spinner,
+.reading::before {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--primary-soft);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.reading::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  vertical-align: -3px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.elapsed {
+  min-width: 6.5em;
+  font-variant-numeric: tabular-nums;
+}
+
+.noscript {
+  padding: 12px 16px;
+  background: var(--warning-soft);
+  color: var(--warning);
+  text-align: center;
+  font-weight: 600;
+}
+
+.print-only {
+  display: none;
+}
+
+.notice button {
+  margin-top: 8px;
+}
+
 .form-status {
   max-width: 34rem;
   margin: 16px auto 0;
@@ -848,8 +905,11 @@ progress {
 }
 
 .results-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
   margin-top: 32px;
-  text-align: center;
 }
 
 .tags-neutral li {
@@ -950,6 +1010,11 @@ progress {
   .overview-text {
     width: 100%;
   }
+
+  .results-actions .button {
+    width: 100%;
+    text-align: center;
+  }
 }
 
 /* Respect users who turn off motion in their system settings */
@@ -960,5 +1025,57 @@ progress {
 
   * {
     transition: none !important;
+  }
+
+  .spinner,
+  .reading::before {
+    animation-duration: 2.4s;
+  }
+}
+
+/* ===== Printing: only the results go on paper ===== */
+@media print {
+  /* Keep the score ring and colored labels */
+  * {
+    print-color-adjust: exact;
+    box-shadow: none !important;
+  }
+
+  body:has(#results:not([hidden])) :is(.site-header, .site-footer, main > section:not(#results)),
+  .results-actions,
+  .notice button {
+    display: none !important;
+  }
+
+  body,
+  .section,
+  .section-tinted {
+    background: #ffffff;
+  }
+
+  .section {
+    padding: 0;
+  }
+
+  .print-only {
+    display: block;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  .overview {
+    break-inside: avoid;
+  }
+
+  .results-grid {
+    display: block;
+  }
+
+  .results-grid > * {
+    margin-bottom: 12px;
+  }
+
+  .result-card {
+    break-inside: avoid;
   }
 }

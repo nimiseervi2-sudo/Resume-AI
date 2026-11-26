@@ -38,9 +38,15 @@ const dropPrompt = document.getElementById("drop-prompt");
 const fileInfo = document.getElementById("file-info");
 const fileError = document.getElementById("file-error");
 const formStatus = document.getElementById("form-status");
+const fileStatus = document.getElementById("file-status");
+const textPreview = document.getElementById("text-preview");
 
-// The chosen resume. Phase 3 will read the text from this file.
-let selectedFile = null;
+// The chosen resume as { file, text, wordCount }, or null
+let resume = null;
+
+// Goes up each time a new read starts or is cancelled
+let readId = 0;
+let isReading = false;
 
 // Returns an error message, or an empty string if the file is acceptable
 function getFileProblem(file) {
@@ -70,42 +76,74 @@ function showFileError(message) {
   dropZone.classList.toggle("invalid", message !== "");
 }
 
-// Updates the upload box to match selectedFile
-function showSelectedFile() {
-  dropPrompt.hidden = selectedFile !== null;
-  fileInfo.hidden = selectedFile === null;
+// Updates the upload box to match "resume"
+function showResume() {
+  dropPrompt.hidden = resume !== null;
+  fileInfo.hidden = resume === null;
+  textPreview.hidden = resume === null;
+  textPreview.open = false;
   // With a file chosen, keyboard users go straight to Replace and Remove
-  fileInput.tabIndex = selectedFile ? -1 : 0;
+  fileInput.tabIndex = resume ? -1 : 0;
 
-  if (selectedFile) {
-    document.getElementById("file-name").textContent = selectedFile.name;
-    document.getElementById("file-size").textContent = formatFileSize(selectedFile.size);
+  if (resume) {
+    document.getElementById("file-name").textContent = resume.file.name;
+    document.getElementById("file-size").textContent =
+      `${formatFileSize(resume.file.size)} · ${resume.wordCount.toLocaleString("en-US")} words read`;
   }
+  // textContent shows the resume as plain text, never as HTML
+  document.getElementById("preview-text").textContent = resume ? resume.text : "";
 }
 
-function chooseFiles(files) {
+function setReading(message) {
+  isReading = message !== "";
+  fileStatus.textContent = message;
+}
+
+// A rejected file does not replace a good one that is already chosen
+function rejectFile(message) {
+  const kept = resume ? ` Still using ${resume.file.name}.` : "";
+  showFileError(message + kept);
+}
+
+async function chooseFiles(files) {
   if (files.length === 0) return;
 
+  const file = files[0];
+  const thisRead = ++readId; // cancels any read already in progress
   formStatus.textContent = "";
+  setReading("");
 
   const problem = files.length > 1
     ? "Please add only one file."
-    : getFileProblem(files[0]);
+    : getFileProblem(file);
 
   if (problem) {
-    // A rejected file does not replace a good one that is already chosen
-    const kept = selectedFile ? ` Still using ${selectedFile.name}.` : "";
-    showFileError(problem + kept);
+    rejectFile(problem);
     return;
   }
 
-  selectedFile = files[0];
   showFileError("");
-  showSelectedFile();
+  setReading(`Reading ${file.name}…`);
+
+  try {
+    const result = await extractResumeText(file);
+    if (thisRead !== readId) return; // the user has moved on to something else
+
+    resume = { file, ...result };
+    setReading("");
+    showResume();
+  } catch (error) {
+    if (thisRead !== readId) return;
+
+    setReading("");
+    rejectFile(error instanceof ResumeError
+      ? error.message
+      : "Something went wrong while reading this file. Please try another one.");
+  }
 }
 
 fileInput.addEventListener("change", () => {
-  chooseFiles(fileInput.files);
+  chooseFiles(Array.from(fileInput.files));
   fileInput.value = ""; // so choosing the same file again still triggers "change"
 });
 
@@ -114,10 +152,12 @@ document.getElementById("replace-file").addEventListener("click", () => {
 });
 
 document.getElementById("remove-file").addEventListener("click", () => {
-  selectedFile = null;
+  resume = null;
+  readId++; // cancels any read in progress
+  setReading("");
   formStatus.textContent = "";
   showFileError("");
-  showSelectedFile();
+  showResume();
   fileInput.focus();
 });
 
@@ -202,10 +242,17 @@ form.addEventListener("submit", (event) => {
   event.preventDefault(); // stay on the page
   formStatus.textContent = "";
 
-  const fileProblem = selectedFile ? "" : "Please add your resume.";
+  if (isReading) {
+    formStatus.textContent = "Your resume is still being read. Please try again in a moment.";
+    return;
+  }
+
+  const fileProblem = resume ? "" : "Please add your resume.";
   const descriptionProblem = getDescriptionProblem(descriptionInput.value);
 
-  showFileError(fileProblem);
+  // Keep an explanation of why the last file failed, if there is one
+  if (!resume) showFileError(fileError.textContent || fileProblem);
+  else showFileError("");
   showDescriptionError(descriptionProblem);
 
   // Move to the first field that needs attention
@@ -215,7 +262,7 @@ form.addEventListener("submit", (event) => {
     descriptionInput.focus();
   } else {
     formStatus.textContent =
-      "Your details look good. Resume reading and analysis are not built yet, so there are no results to show.";
+      "Your resume and job description are ready. Analysis is not built yet, so there are no results to show.";
   }
 });
 

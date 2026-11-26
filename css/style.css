@@ -43,7 +43,9 @@ a {
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
-textarea:focus-visible {
+textarea:focus-visible,
+summary:focus-visible,
+pre:focus-visible {
   outline: 3px solid var(--primary);
   outline-offset: 3px;
 }
@@ -549,6 +551,38 @@ textarea[aria-invalid="true"] {
   font-weight: 600;
 }
 
+.card .reading {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.text-preview {
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
+
+.text-preview summary {
+  cursor: pointer;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.text-preview pre {
+  max-height: 240px;
+  margin-top: 8px;
+  padding: 12px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--background);
+  font: inherit;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.reading:empty,
 .error:empty,
 .form-status:empty {
   display: none;

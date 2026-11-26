@@ -46,7 +46,7 @@
             <a href="#analyze" class="button">Get Started</a>
             <a href="#features" class="button button-outline">See Features</a>
           </div>
-          <p class="hero-note">ResumeAI is in development. You can add your details now; analysis is coming soon.</p>
+          <p class="hero-note">ResumeAI is in development. You can add your resume and job details now; analysis is coming soon.</p>
         </div>
 
         <!-- Static illustration only. These numbers are not a real analysis. -->
@@ -160,8 +160,13 @@
                 </div>
               </div>
             </div>
+            <p class="reading" id="file-status" role="status"></p>
             <p class="error" id="file-error" role="alert"></p>
-            <p class="hint">Your file is not uploaded anywhere.</p>
+            <details class="text-preview" id="text-preview" hidden>
+              <summary>Check the text we read</summary>
+              <pre id="preview-text" tabindex="0"></pre>
+            </details>
+            <p class="hint">Your file is read in your browser and is not uploaded.</p>
           </div>
 
           <div class="card">
@@ -192,6 +197,9 @@
     </div>
   </footer>
 
-  <script src="js/app.js"></script>
+  <!-- Reads DOCX files. "integrity" makes the browser reject a changed file. -->
+  <script defer src="https://cdn.jsdelivr.net/npm/mammoth@1.13.0/mammoth.browser.min.js" integrity="sha384-8NWE3bZDrmRI4IePMoQaEoLhAQ1MmRMJkdNgnGiHRFanTqsFKr0TmK6aSZvFJ/PO" crossorigin="anonymous"></script>
+  <script defer src="js/resumeParser.js"></script>
+  <script defer src="js/app.js"></script>
 </body>
 </html>

@@ -162,6 +162,7 @@ backend/server.js   Web server
 backend/routes/     AI analysis API
 tests/              Automated tests
 render.yaml         Deployment settings for Render
+memory.md           Project log: state, decisions and next steps
 ```
 
 ## Built with

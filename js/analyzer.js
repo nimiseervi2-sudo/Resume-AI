@@ -237,6 +237,25 @@ function joinList(items) {
   return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
 }
 
+// True if the text really mentions this skill, under any spelling we know.
+// Used to check the skills reported by the AI.
+function mentionsSkill(text, skillName) {
+  const simplify = (value) => ` ${value.toLowerCase().replace(/[^\p{L}\p{N}+#]+/gu, " ").trim()} `;
+  const name = skillName.replace(/\(.*?\)/g, "").trim(); // "JavaScript (ES6)"
+  if (!simplify(name).trim()) return false;
+  if (simplify(text).includes(simplify(name))) return true;
+
+  const wanted = name.toLowerCase();
+  const known = [...TECHNICAL_SKILLS, ...SOFT_SKILLS].find(
+    ([title, aliases]) => title.toLowerCase() === wanted || aliases.some((alias) => alias.toLowerCase() === wanted),
+  );
+  if (known) return containsSkill(toSingleLine(text), known);
+
+  // "HTML/CSS" is present only if every part is
+  const parts = name.split(/\/|,| and | & /).filter((part) => part.trim());
+  return parts.length > 1 && parts.every((part) => mentionsSkill(text, part));
+}
+
 // ===== Main function =====
 // Returns the same fields the AI analysis will return, plus keyword lists.
 // Throws an Error if the job description has nothing to compare.
@@ -370,7 +389,7 @@ function analyzeResume(resumeText, jobDescription, jobTitle = "") {
   };
 }
 
-// Lets the tests load this file with Node.js; browsers skip this
+// Lets the server and tests load this file with Node.js; browsers skip this
 if (typeof module !== "undefined") {
-  module.exports = { analyzeResume };
+  module.exports = { analyzeResume, mentionsSkill };
 }

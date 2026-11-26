@@ -130,7 +130,7 @@ async function chooseFiles(files) {
     if (thisRead !== readId) return; // the user has moved on to something else
 
     resume = { file, ...result };
-    hideResults(); // old results belong to the old resume
+    clearAnalysis(); // old results belong to the old resume
     formStatus.textContent = "";
     setReading("");
     showResume();
@@ -155,7 +155,7 @@ document.getElementById("replace-file").addEventListener("click", () => {
 
 document.getElementById("remove-file").addEventListener("click", () => {
   resume = null;
-  hideResults();
+  clearAnalysis();
   readId++; // cancels any read in progress
   setReading("");
   formStatus.textContent = "";
@@ -235,7 +235,7 @@ function updateCharacterCount() {
 descriptionInput.addEventListener("input", () => {
   updateCharacterCount();
   formStatus.textContent = "";
-  hideResults();
+  clearAnalysis();
 
   // Clear an error as soon as the text becomes valid
   if (descriptionError.textContent && !getDescriptionProblem(descriptionInput.value)) {
@@ -245,13 +245,125 @@ descriptionInput.addEventListener("input", () => {
 
 titleInput.addEventListener("input", () => {
   formStatus.textContent = "";
+  clearAnalysis();
+});
+
+// ===== Analysis =====
+const useAiInput = document.getElementById("use-ai");
+const aiNote = document.getElementById("ai-note");
+const analyzeButton = document.getElementById("analyze-button");
+
+// Lets us cancel an AI request when the user changes something
+let aiRequest = null;
+
+// Removes old results and stops any analysis in progress
+function clearAnalysis() {
+  if (aiRequest) {
+    aiRequest.abort();
+    aiRequest = null;
+    setAnalyzing(false);
+  }
   hideResults();
+}
+
+function setAnalyzing(isAnalyzing) {
+  analyzeButton.disabled = isAnalyzing;
+  analyzeButton.textContent = isAnalyzing ? "Analyzing…" : "Analyze Resume";
+}
+
+// Asks the server whether AI is set up, and tells the user where text will go
+async function checkAiStatus() {
+  let status = { aiAvailable: false };
+  try {
+    const response = await fetch("/api/status");
+    if (response.ok) status = await response.json();
+  } catch {
+    // No server (for example, index.html opened directly): use basic analysis
+  }
+
+  useAiInput.disabled = !status.aiAvailable;
+  useAiInput.checked = status.aiAvailable;
+
+  if (!status.aiAvailable) {
+    aiNote.textContent = "AI analysis is not set up, so you will get the basic keyword analysis.";
+  } else if (status.isLocal) {
+    aiNote.textContent = `Your resume text is analyzed by ${status.model}, running on the same machine as this website.`;
+  } else {
+    aiNote.textContent = `Your resume text and the job details will be sent to ${status.service}. Free AI services may store or learn from what you send. Untick to keep everything in your browser.`;
+  }
+}
+
+async function requestAiAnalysis(details, signal) {
+  let response;
+  try {
+    response = await fetch("/api/analyze", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(details),
+      signal,
+    });
+  } catch {
+    throw new Error("The server could not be reached.");
+  }
+
+  const data = await response.json().catch(() => null);
+  if (!response.ok || !data) {
+    throw new Error(data?.error || "The server sent an unexpected answer.");
+  }
+  return data;
+}
+
+function runBasicAnalysis(details, notice = "") {
+  try {
+    const result = analyzeResume(details.resumeText, details.jobDescription, details.jobTitle);
+    showResults(result, "Basic keyword analysis, without AI. The score is an estimate.", notice);
+  } catch (error) {
+    formStatus.textContent = notice ? `${notice.replace(" Showing the basic analysis instead.", "")} ${error.message}` : error.message;
+  }
+}
+
+async function runAnalysis() {
+  const details = {
+    resumeText: resume.text,
+    jobDescription: descriptionInput.value.trim(),
+    jobTitle: titleInput.value.trim(),
+  };
+
+  if (!useAiInput.checked) {
+    runBasicAnalysis(details);
+    return;
+  }
+
+  const request = new AbortController();
+  aiRequest = request;
+  setAnalyzing(true);
+  formStatus.textContent = "The AI is reading your resume. This can take up to two minutes.";
+
+  try {
+    const result = await requestAiAnalysis(details, request.signal);
+    if (request !== aiRequest) return; // cancelled
+    formStatus.textContent = "";
+    showResults(result, `AI analysis by ${result.model}. The score is an estimate, and AI can make mistakes.`);
+  } catch (error) {
+    if (request !== aiRequest) return;
+    formStatus.textContent = "";
+    runBasicAnalysis(details, `AI analysis was not available: ${error.message} Showing the basic analysis instead.`);
+  }
+
+  aiRequest = null;
+  setAnalyzing(false);
+}
+
+useAiInput.addEventListener("change", () => {
+  formStatus.textContent = "";
+  clearAnalysis();
 });
 
 form.addEventListener("submit", (event) => {
   event.preventDefault(); // stay on the page
+  if (aiRequest) return; // already analyzing
   formStatus.textContent = "";
-  hideResults();
+  clearAnalysis();
 
   if (isReading) {
     formStatus.textContent = "Your resume is still being read. Please try again in a moment.";
@@ -272,13 +384,10 @@ form.addEventListener("submit", (event) => {
   } else if (descriptionProblem) {
     descriptionInput.focus();
   } else {
-    try {
-      showResults(analyzeResume(resume.text, descriptionInput.value, titleInput.value));
-    } catch (error) {
-      formStatus.textContent = error.message;
-    }
+    runAnalysis();
   }
 });
 
 // Some browsers restore typed text after a reload
 updateCharacterCount();
+checkAiStatus();

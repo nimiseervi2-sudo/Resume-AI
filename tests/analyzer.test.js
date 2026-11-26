@@ -1,7 +1,7 @@
 // Run with: npm test
 const test = require("node:test");
 const assert = require("node:assert");
-const { analyzeResume } = require("../js/analyzer.js");
+const { analyzeResume, mentionsSkill } = require("../js/analyzer.js");
 
 const resume = `Asha Verma
 asha@example.com | +91 98765 43210
@@ -103,4 +103,14 @@ test("gives feedback based on what the resume contains", () => {
 
 test("rejects a job description with nothing to compare", () => {
   assert.throws(() => analyzeResume(resume, "Come and be with us because we are good to all of you."), /No skills/);
+});
+
+test("checks whether a skill is really in the text", () => {
+  const text = "HTML5, CSS3, NodeJS and JavaScript. Built REST APIs.";
+  for (const skill of ["HTML", "Node.js", "JavaScript (ES6)", "HTML/CSS", "REST API"]) {
+    assert.ok(mentionsSkill(text, skill), skill);
+  }
+  for (const skill of ["Java", "React", "HTML/React", "", "()"]) {
+    assert.ok(!mentionsSkill(text, skill), skill);
+  }
 });

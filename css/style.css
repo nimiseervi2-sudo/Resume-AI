@@ -593,6 +593,43 @@ textarea[aria-invalid="true"] {
   text-align: center;
 }
 
+.ai-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.ai-option input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+}
+
+.ai-note {
+  max-width: 34rem;
+  margin: 4px auto 16px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+button.button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+  transform: none;
+}
+
+.notice {
+  max-width: 40rem;
+  margin: -20px auto 32px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: var(--warning-soft);
+  color: var(--warning);
+  font-weight: 500;
+  text-align: center;
+}
+
 .form-status {
   max-width: 34rem;
   margin: 16px auto 0;

@@ -3,8 +3,14 @@
   "version": "0.1.0",
   "description": "AI Resume Analyzer: compare a resume with a job description.",
   "private": true,
+  "engines": {
+    "node": ">=20.12"
+  },
   "scripts": {
-    "start": "python3 -m http.server 5500 --bind 127.0.0.1",
+    "start": "node backend/server.js",
     "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^5.3.0"
   }
 }

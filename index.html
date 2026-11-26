@@ -46,7 +46,7 @@
             <a href="#analyze" class="button">Get Started</a>
             <a href="#features" class="button button-outline">See Features</a>
           </div>
-          <p class="hero-note">ResumeAI is in development. Basic keyword analysis is ready now. AI analysis is coming soon.</p>
+          <p class="hero-note">ResumeAI is in development. Get AI feedback, or a basic keyword analysis when AI is unavailable.</p>
         </div>
 
         <!-- Static illustration only. These numbers are not a real analysis. -->
@@ -166,7 +166,7 @@
               <summary>Check the text we read</summary>
               <pre id="preview-text" tabindex="0"></pre>
             </details>
-            <p class="hint">Your file is read in your browser and is not uploaded.</p>
+            <p class="hint">Your file is read in your browser and is never uploaded.</p>
           </div>
 
           <div class="card">
@@ -182,7 +182,9 @@
           </div>
 
           <div class="form-footer">
-            <button type="submit" class="button">Analyze Resume</button>
+            <label class="ai-option"><input type="checkbox" id="use-ai" disabled> Use AI analysis</label>
+            <p class="ai-note" id="ai-note">Checking whether AI analysis is available…</p>
+            <button type="submit" class="button" id="analyze-button">Analyze Resume</button>
             <p class="form-status" id="form-status" role="status"></p>
           </div>
         </form>
@@ -192,7 +194,8 @@
     <section id="results" class="section section-tinted" aria-labelledby="results-title" hidden>
       <div class="container">
         <h2 class="section-title" id="results-title" tabindex="-1">Your Results</h2>
-        <p class="section-text">Basic keyword analysis, without AI. The score is an estimate.</p>
+        <p class="section-text" id="result-source"></p>
+        <p class="notice" id="result-notice" role="status" hidden></p>
 
         <div class="card score-card">
           <p class="score-label"><span class="score-value" id="result-score"></span> / 100 estimated match</p>
@@ -209,11 +212,11 @@
             <h3>Missing skills</h3>
             <ul class="tags tags-warning" id="result-missing-skills"></ul>
           </div>
-          <div class="card">
+          <div class="card keyword-card">
             <h3>Matching keywords</h3>
             <ul class="tags tags-success" id="result-matched-keywords"></ul>
           </div>
-          <div class="card">
+          <div class="card keyword-card">
             <h3>Missing keywords</h3>
             <ul class="tags tags-warning" id="result-missing-keywords"></ul>
           </div>

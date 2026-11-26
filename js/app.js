@@ -130,6 +130,8 @@ async function chooseFiles(files) {
     if (thisRead !== readId) return; // the user has moved on to something else
 
     resume = { file, ...result };
+    hideResults(); // old results belong to the old resume
+    formStatus.textContent = "";
     setReading("");
     showResume();
   } catch (error) {
@@ -153,6 +155,7 @@ document.getElementById("replace-file").addEventListener("click", () => {
 
 document.getElementById("remove-file").addEventListener("click", () => {
   resume = null;
+  hideResults();
   readId++; // cancels any read in progress
   setReading("");
   formStatus.textContent = "";
@@ -198,6 +201,7 @@ const MIN_DESCRIPTION_LENGTH = 50;
 const MAX_DESCRIPTION_LENGTH = 10000;
 
 const form = document.getElementById("analyze-form");
+const titleInput = document.getElementById("job-title");
 const descriptionInput = document.getElementById("job-description");
 const descriptionCount = document.getElementById("description-count");
 const descriptionError = document.getElementById("description-error");
@@ -231,6 +235,7 @@ function updateCharacterCount() {
 descriptionInput.addEventListener("input", () => {
   updateCharacterCount();
   formStatus.textContent = "";
+  hideResults();
 
   // Clear an error as soon as the text becomes valid
   if (descriptionError.textContent && !getDescriptionProblem(descriptionInput.value)) {
@@ -238,9 +243,15 @@ descriptionInput.addEventListener("input", () => {
   }
 });
 
+titleInput.addEventListener("input", () => {
+  formStatus.textContent = "";
+  hideResults();
+});
+
 form.addEventListener("submit", (event) => {
   event.preventDefault(); // stay on the page
   formStatus.textContent = "";
+  hideResults();
 
   if (isReading) {
     formStatus.textContent = "Your resume is still being read. Please try again in a moment.";
@@ -261,8 +272,11 @@ form.addEventListener("submit", (event) => {
   } else if (descriptionProblem) {
     descriptionInput.focus();
   } else {
-    formStatus.textContent =
-      "Your resume and job description are ready. Analysis is not built yet, so there are no results to show.";
+    try {
+      showResults(analyzeResume(resume.text, descriptionInput.value, titleInput.value));
+    } catch (error) {
+      formStatus.textContent = error.message;
+    }
   }
 });
 

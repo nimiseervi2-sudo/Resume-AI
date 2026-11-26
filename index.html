@@ -46,7 +46,7 @@
             <a href="#analyze" class="button">Get Started</a>
             <a href="#features" class="button button-outline">See Features</a>
           </div>
-          <p class="hero-note">ResumeAI is in development. You can add your resume and job details now; analysis is coming soon.</p>
+          <p class="hero-note">ResumeAI is in development. Basic keyword analysis is ready now. AI analysis is coming soon.</p>
         </div>
 
         <!-- Static illustration only. These numbers are not a real analysis. -->
@@ -188,6 +188,55 @@
         </form>
       </div>
     </section>
+
+    <section id="results" class="section section-tinted" aria-labelledby="results-title" hidden>
+      <div class="container">
+        <h2 class="section-title" id="results-title" tabindex="-1">Your Results</h2>
+        <p class="section-text">Basic keyword analysis, without AI. The score is an estimate.</p>
+
+        <div class="card score-card">
+          <p class="score-label"><span class="score-value" id="result-score"></span> / 100 estimated match</p>
+          <progress id="result-score-bar" max="100" value="0" aria-label="Estimated match score"></progress>
+          <p id="result-summary"></p>
+        </div>
+
+        <div class="results-grid">
+          <div class="card">
+            <h3>Matching skills</h3>
+            <ul class="tags tags-success" id="result-matched-skills"></ul>
+          </div>
+          <div class="card">
+            <h3>Missing skills</h3>
+            <ul class="tags tags-warning" id="result-missing-skills"></ul>
+          </div>
+          <div class="card">
+            <h3>Matching keywords</h3>
+            <ul class="tags tags-success" id="result-matched-keywords"></ul>
+          </div>
+          <div class="card">
+            <h3>Missing keywords</h3>
+            <ul class="tags tags-warning" id="result-missing-keywords"></ul>
+          </div>
+          <div class="card">
+            <h3>Strengths</h3>
+            <ul class="bullets" id="result-strengths"></ul>
+          </div>
+          <div class="card">
+            <h3>Weaknesses</h3>
+            <ul class="bullets" id="result-weaknesses"></ul>
+          </div>
+          <div class="card wide">
+            <h3>Suggestions</h3>
+            <ul class="bullets" id="result-suggestions"></ul>
+          </div>
+          <div class="card wide">
+            <h3>Keywords to consider</h3>
+            <p class="hint">Add these only if they truthfully describe you.</p>
+            <ul class="tags tags-neutral" id="result-recommended"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
@@ -200,6 +249,8 @@
   <!-- Reads DOCX files. "integrity" makes the browser reject a changed file. -->
   <script defer src="https://cdn.jsdelivr.net/npm/mammoth@1.13.0/mammoth.browser.min.js" integrity="sha384-8NWE3bZDrmRI4IePMoQaEoLhAQ1MmRMJkdNgnGiHRFanTqsFKr0TmK6aSZvFJ/PO" crossorigin="anonymous"></script>
   <script defer src="js/resumeParser.js"></script>
+  <script defer src="js/analyzer.js"></script>
+  <script defer src="js/dashboard.js"></script>
   <script defer src="js/app.js"></script>
 </body>
 </html>

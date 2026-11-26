@@ -275,7 +275,8 @@ button.button-small {
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  background: conic-gradient(var(--primary) 78%, var(--primary-soft) 0);
+  /* Fills --score percent of the circle (78 for the sample preview) */
+  background: conic-gradient(var(--ring-color, var(--primary)) calc(var(--score, 78) * 1%), var(--primary-soft) 0);
 }
 
 .score-ring span {
@@ -645,25 +646,86 @@ button.button:disabled {
   outline: none;
 }
 
-.score-card {
+/* Score overview. Each level sets the ring and label colors. */
+.overview {
+  display: flex;
+  align-items: center;
+  gap: 32px;
   margin-bottom: 20px;
-  text-align: center;
 }
 
-.score-label {
+.level-high {
+  --ring-color: #16a34a;
+  --level-text: var(--success);
+  --level-soft: var(--success-soft);
+}
+
+.level-medium {
+  --ring-color: #d97706;
+  --level-text: var(--warning);
+  --level-soft: var(--warning-soft);
+}
+
+.level-low {
+  --ring-color: #dc2626;
+  --level-text: var(--danger);
+  --level-soft: #fee2e2;
+}
+
+.score-ring-large {
+  width: 160px;
+  height: 160px;
+}
+
+.score-ring-large span {
+  width: 128px;
+  height: 128px;
+  align-content: center;
+  line-height: 1.1;
+}
+
+.score-ring-large strong {
+  font-size: 2.8rem;
+}
+
+.card .score-ring-large small {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.overview-text {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.card .overview-label {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.card .verdict {
+  display: inline-block;
+  margin: 8px 0 12px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: var(--level-soft);
+  color: var(--level-text);
+  font-weight: 700;
+}
+
+.coverage {
+  margin-top: 16px;
+  font-size: 0.9rem;
   font-weight: 600;
 }
 
-.card .score-value {
-  font-size: 3rem;
-  font-weight: 800;
-  color: var(--primary);
-}
-
 progress {
-  width: min(420px, 100%);
+  display: block;
+  width: 100%;
   height: 12px;
-  margin: 8px 0 16px;
+  margin-top: 6px;
   accent-color: var(--primary);
 }
 
@@ -683,16 +745,111 @@ progress {
 }
 
 .results-grid h3 {
-  margin: 0 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 16px;
 }
 
-.bullets {
-  padding-left: 20px;
+/* A colored top edge shows whether a card is good news or needs work */
+.result-card {
+  border-top: 4px solid var(--primary);
+}
+
+.tone-success {
+  border-top-color: #16a34a;
+}
+
+.tone-warning {
+  border-top-color: #d97706;
+}
+
+.count {
+  min-width: 28px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.icon-list,
+.number-list {
+  list-style: none;
   color: var(--text-muted);
 }
 
-.bullets li + li {
-  margin-top: 8px;
+.icon-list li,
+.number-list li {
+  position: relative;
+  padding-left: 36px;
+}
+
+.icon-list li + li {
+  margin-top: 12px;
+}
+
+.icon-list li::before,
+.number-list li::before {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.check-list li::before {
+  content: "✓" / "";
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.alert-list li::before {
+  content: "!" / "";
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.number-list {
+  counter-reset: suggestion;
+}
+
+.number-list li {
+  counter-increment: suggestion;
+  padding-block: 10px;
+}
+
+.number-list li + li {
+  border-top: 1px solid var(--border);
+}
+
+.number-list li::before {
+  content: counter(suggestion);
+  top: 11px;
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.icon-list li.empty,
+.number-list li.empty {
+  padding-left: 0;
+}
+
+.icon-list li.empty::before,
+.number-list li.empty::before {
+  display: none;
+}
+
+.results-actions {
+  margin-top: 32px;
+  text-align: center;
 }
 
 .tags-neutral li {
@@ -782,6 +939,16 @@ progress {
 
   .analyze-form .card {
     padding: 16px;
+  }
+
+  .overview {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+
+  .overview-text {
+    width: 100%;
   }
 }
 

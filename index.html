@@ -197,47 +197,58 @@
         <p class="section-text" id="result-source"></p>
         <p class="notice" id="result-notice" role="status" hidden></p>
 
-        <div class="card score-card">
-          <p class="score-label"><span class="score-value" id="result-score"></span> / 100 estimated match</p>
-          <progress id="result-score-bar" max="100" value="0" aria-label="Estimated match score"></progress>
-          <p id="result-summary"></p>
+        <div class="card overview">
+          <div class="score-ring score-ring-large" id="result-ring">
+            <span><strong id="result-score"></strong><small>/ 100</small></span>
+          </div>
+          <div class="overview-text">
+            <p class="overview-label">Estimated ATS score<span id="result-job"></span></p>
+            <p class="verdict" id="result-verdict"></p>
+            <p id="result-summary"></p>
+            <div class="coverage" id="result-coverage">
+              <label for="result-coverage-bar" id="result-coverage-text"></label>
+              <progress id="result-coverage-bar" value="0" max="1"></progress>
+            </div>
+          </div>
         </div>
 
         <div class="results-grid">
-          <div class="card">
-            <h3>Matching skills</h3>
+          <div class="card result-card tone-success">
+            <h3>Matching skills <span class="count" id="result-matched-skills-count"></span></h3>
             <ul class="tags tags-success" id="result-matched-skills"></ul>
           </div>
-          <div class="card">
-            <h3>Missing skills</h3>
+          <div class="card result-card tone-warning">
+            <h3>Missing skills <span class="count" id="result-missing-skills-count"></span></h3>
             <ul class="tags tags-warning" id="result-missing-skills"></ul>
           </div>
-          <div class="card keyword-card">
-            <h3>Matching keywords</h3>
+          <div class="card result-card tone-success keyword-card">
+            <h3>Matching keywords <span class="count" id="result-matched-keywords-count"></span></h3>
             <ul class="tags tags-success" id="result-matched-keywords"></ul>
           </div>
-          <div class="card keyword-card">
-            <h3>Missing keywords</h3>
+          <div class="card result-card tone-warning keyword-card">
+            <h3>Missing keywords <span class="count" id="result-missing-keywords-count"></span></h3>
             <ul class="tags tags-warning" id="result-missing-keywords"></ul>
           </div>
-          <div class="card">
-            <h3>Strengths</h3>
-            <ul class="bullets" id="result-strengths"></ul>
+          <div class="card result-card tone-success">
+            <h3>Strengths <span class="count" id="result-strengths-count"></span></h3>
+            <ul class="icon-list check-list" id="result-strengths"></ul>
           </div>
-          <div class="card">
-            <h3>Weaknesses</h3>
-            <ul class="bullets" id="result-weaknesses"></ul>
+          <div class="card result-card tone-warning">
+            <h3>Weaknesses <span class="count" id="result-weaknesses-count"></span></h3>
+            <ul class="icon-list alert-list" id="result-weaknesses"></ul>
           </div>
-          <div class="card wide">
-            <h3>Suggestions</h3>
-            <ul class="bullets" id="result-suggestions"></ul>
+          <div class="card result-card wide">
+            <h3>Suggestions to improve <span class="count" id="result-suggestions-count"></span></h3>
+            <ol class="number-list" id="result-suggestions"></ol>
           </div>
-          <div class="card wide">
-            <h3>Keywords to consider</h3>
+          <div class="card result-card wide">
+            <h3>Keywords to consider <span class="count" id="result-recommended-count"></span></h3>
             <p class="hint">Add these only if they truthfully describe you.</p>
             <ul class="tags tags-neutral" id="result-recommended"></ul>
           </div>
         </div>
+
+        <p class="results-actions"><a href="#analyze" class="button button-outline">Edit details and analyze again</a></p>
       </div>
     </section>
   </main>

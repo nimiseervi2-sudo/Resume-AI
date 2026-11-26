@@ -316,7 +316,11 @@ async function requestAiAnalysis(details, signal) {
 function runBasicAnalysis(details, notice = "") {
   try {
     const result = analyzeResume(details.resumeText, details.jobDescription, details.jobTitle);
-    showResults(result, "Basic keyword analysis, without AI. The score is an estimate.", notice);
+    showResults(result, {
+      source: "Basic keyword analysis, without AI. The score is an estimate.",
+      notice,
+      jobTitle: details.jobTitle,
+    });
   } catch (error) {
     formStatus.textContent = notice ? `${notice.replace(" Showing the basic analysis instead.", "")} ${error.message}` : error.message;
   }
@@ -343,7 +347,10 @@ async function runAnalysis() {
     const result = await requestAiAnalysis(details, request.signal);
     if (request !== aiRequest) return; // cancelled
     formStatus.textContent = "";
-    showResults(result, `AI analysis by ${result.model}. The score is an estimate, and AI can make mistakes.`);
+    showResults(result, {
+      source: `AI analysis by ${result.model}. The score is an estimate, and AI can make mistakes.`,
+      jobTitle: details.jobTitle,
+    });
   } catch (error) {
     if (request !== aiRequest) return;
     formStatus.textContent = "";
